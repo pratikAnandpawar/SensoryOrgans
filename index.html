@@ -1,0 +1,197 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <link rel="stylesheet" href="./index.css">
+<style>
+#div1 {
+  width: 350px;
+  height: 70px;
+  padding: 10px;
+  border: 1px solid #aaaaaa;
+}
+#qun{
+  display: none;
+}
+#complete{
+  display: none;
+}
+#gifs{
+  display: none;
+}
+</style>
+<script>
+  var i = 0;
+  let quns = new Map();
+    quns.set("What do you use to check if flowers smell nice?", {a: "nose", audio: new Audio("./audio/1.mp3")})
+    quns.set("Mom is making a cake, how will you taste it?", {a: "tongue", audio: new Audio("./audio/2.mp3")})
+    quns.set("You need to take a bath, how to check if the water is warm?", {a: "hand", audio: new Audio("./audio/3.mp3")})
+    quns.set("How can you tell if your sibling is playing music too loud?", {a: "ears", audio: new Audio("./audio/4.mp3")})
+    quns.set("How do you see the pretty rainbow in the sky?", {a: "eyes", audio: new Audio("./audio/5.mp3")})
+  let tries = 0
+  let myArray = Array.from(quns.keys())
+  //initializing audios
+  const welldone = new Audio("./audio/wellDone.mp3")
+  const awesome = new Audio("./audio/awesome.mp3")
+  const tryAgain = new Audio("./audio/tryAgain.mp3")
+
+  const eyes = new Audio("./audio/eyes.mp3")
+  const ears = new Audio("./audio/ears.mp3")
+  const mouth = new Audio("./audio/aTongue.mp3")
+  const hand = new Audio("./audio/aTouch.mp3")
+  const nose = new Audio("./audio/aNose.mp3")
+
+
+
+//end quiz
+function endquiz() {
+      console.log(tries)
+      document.getElementById('qun').style.display = "none";
+      document.getElementById('complete').style.display = "block";
+      document.getElementById('try').innerText = tries;
+      i = 0;
+      tries = 0;
+}  
+//sleep fn
+function sleep(milliseconds) {
+  const date = Date.now();
+  let currentDate = null;
+  do {
+    currentDate = Date.now();
+  } while (currentDate - date < milliseconds);
+}
+//checking answers
+function checkAns(key,ans) {
+    tries++;
+    let temp = quns.get(key)
+    if(temp.a === ans && i<myArray.length){
+            console.log("you are correct buckaroo");
+                //randomizer
+              if((Math.floor(Math.random() * 10) + 1)%2 === 0)
+                  welldone.play();
+              else
+                  awesome.play();
+                  document.getElementById('gifs').style.display = "none"
+                  sleep(2000);
+            if(myArray.length - 1 !== i){
+            document.getElementById('questions').innerText = myArray[++i]
+            let temp2 = quns.get(myArray[i]);
+            console.log(temp2)
+            temp2.audio.play()
+            }
+            else
+              endquiz();
+        }
+    else{
+            console.log("you are wrong buckaroo");
+            tryAgain.play();
+        }
+}
+
+//starting quiz
+function startQuiz(){
+    document.getElementById('complete').style.display = "none";
+    document.getElementById('quiz_start').style.display = "none";
+    document.getElementById('qun').style.display = "block";
+    let question =  document.getElementById('questions')
+    question.innerText =  myArray[i];
+    let temp = quns.get(myArray[i]);
+    
+    temp.audio.play();
+    
+}
+
+//middle fucntion
+function  myFunction (ans){
+
+      if(ans === "nose")
+      nose.play();
+      if(ans === "tongue")
+      mouth.play();
+      if(ans === "eyes")
+      eyes.play();
+      if(ans === "ears")
+      ears.play();
+      if(ans === "hand")
+      hand.play();
+  sleep(2000)
+  checkAns(document.getElementById('questions').innerText,ans)
+}
+
+//hint
+function hint(){
+  console.log("Hint clicked");
+  document.getElementById('gifs').style.display = "block"
+  let question = document.getElementById('questions').innerText;
+  let val = quns.get(question).a
+  console.log(val)
+  let img = document.getElementById('gifsimg')
+  console.log(img)
+      if(val === "nose")
+      img.setAttribute("src","nosegif.gif")
+      if(val === "tongue")
+      img.setAttribute("src","mouthgif.gif")
+      if(val === "eyes")
+      img.setAttribute("src","eyesgif.gif")
+      if(val === "ears")
+      img.setAttribute("src","earsgif.gif")
+      if(val === "hand")
+      img.setAttribute("src","handgif.gif")
+  
+}
+</script>
+</head>
+
+
+<body>
+ 
+    <div id="quiz_start">
+      <div class="rainbow-text">Lets Start the Quiz?</div>
+      <button onclick="startQuiz()" class="custom-btn btn-5"><span> START</span> </button>
+    </div>
+  
+
+    <div id="qun">
+      <!-- questions section -->
+      <section>
+        <p id="questions"></p>
+        <button onclick="hint()" style="position:fixed;right: 0; top: 0;margin-top: 20px;margin-right: 20px;">HINT!</button>
+      </section>
+
+
+      <!-- Option section -->
+      <section class="option-section">
+        <div class="inner-options">
+          <img class="img" src="hand.jpg" alt="" onclick="myFunction('hand')" >
+
+        </div>
+        <div class="inner-options">
+          <img class="img" src="nose.jpg" alt="" onclick="myFunction('nose')">
+          
+        </div>
+        <div class="inner-options">
+          <img class="img" src="tongue.jpg" alt="" onclick="myFunction('tongue')">
+          
+        </div>
+        <div class="inner-options">
+          <img class="img" src="ear.jpg" alt="" onclick="myFunction('ears')">
+          
+        </div>
+        <div class="inner-options">
+          <img class="img" src="eyes.jpg" alt="" onclick="myFunction('eyes')">
+          
+        </div>
+
+      </section>
+
+    </div>
+
+    <div id="complete">
+            <p style="font-size: 70px;font-weight: lighter;">You have completed the quiz with a total of <strong><span id="try"></span></strong> tries</p>
+            <button class="custom-btn btn-5" onclick="startQuiz()">Try Again?</button>
+    </div>
+    
+    <div id="gifs">
+      <img id="gifsimg" src="" alt="">
+    </div>
+    
+</html>
